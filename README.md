@@ -9,20 +9,22 @@ The file path will be relative from the path set in _settings.userDir_, or if no
 
 ## Usage
 
-Just like the original _function_ node the message is passed in as a JavaScript object called `msg`.
+Writing functions in this node works works just like functions in the the original function node (except that you write it in an actual file and no in an input field):
 
-By convention it will have a `msg.payload` property containing the body of the message.
-
-The function should return the messages it wants to pass on to the next nodes in the flow. It can return:
-
-* a single message object - passed to nodes connected to the first output
-* an array of message objects - passed to nodes connected to the corresponding outputs
-
-If any element of the array is itself an array of messages, multiple messages are sent to the corresponding output.
-
-If null is returned, either by itself or as an element of the array, no message is passed on.
-
-See the online documentation for more help.
+> The message is passed in as a JavaScript object called msg.
+> 
+> By convention it will have a `msg.payload` property containing the body of the message.
+> 
+> The function should return the messages it wants to pass on to the next nodes in the flow. It can return:
+> 
+> * a single message object - passed to nodes connected to the first output
+> * an array of message objects - passed to nodes connected to the corresponding outputs
+> 
+> If any element of the array is itself an array of messages, multiple messages are sent to the corresponding output.
+> 
+> If null is returned, either by itself or as an element of the array, no message is passed on.
+> 
+> See the [online documentation](http://nodered.org/docs/writing-functions.html) for more help.
 
 
 ## Sample
