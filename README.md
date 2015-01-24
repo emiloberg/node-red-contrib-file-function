@@ -28,14 +28,18 @@ See the online documentation for more help.
 ## Sample
 Create a file called `sample-file-function.js` in your Node-RED root folder. Add the following content to that file:
 
-    var reversedPayload = msg.payload.split("").reverse().join("");
+```javascript
+var reversedPayload = msg.payload.split("").reverse().join("");
 
-    return {
-	    payload: 'This is the input payload, but reversed: ' + reversedPayload
-    };
+return {
+    payload: 'This is the input payload, but reversed: ' + reversedPayload
+};
+```
 
 Import this flow (or add it manually by creating a simple [inject] > [file function] > [debug] flow yourself. Add the value `sample-file-function.js` to the _filename_ field in the _file function_ node):
 
-    [{"id":"62efe026.9d102","type":"inject","name":"Inject","topic":"this is topic from the function","payload":"this data is feeded to the function","payloadType":"string","repeat":"","crontab":"","once":false,"x":303,"y":119,"z":"dd1ad5c3.22e528","wires":[["fd11ceda.02ee3"]]},{"id":"fd11ceda.02ee3","type":"file function","name":"","filename":"sample-file-function.js","outputs":"1","x":508,"y":119,"z":"dd1ad5c3.22e528","wires":[["7e85f5db.817a0c"]]},{"id":"7e85f5db.817a0c","type":"debug","name":"","active":true,"console":"false","complete":"true","x":723,"y":118,"z":"dd1ad5c3.22e528","wires":[]}]
+```javascript
+[{"id":"62efe026.9d102","type":"inject","name":"Inject","topic":"this is topic from the function","payload":"this data is feeded to the function","payloadType":"string","repeat":"","crontab":"","once":false,"x":303,"y":119,"z":"dd1ad5c3.22e528","wires":[["fd11ceda.02ee3"]]},{"id":"fd11ceda.02ee3","type":"file function","name":"","filename":"sample-file-function.js","outputs":"1","x":508,"y":119,"z":"dd1ad5c3.22e528","wires":[["7e85f5db.817a0c"]]},{"id":"7e85f5db.817a0c","type":"debug","name":"","active":true,"console":"false","complete":"true","x":723,"y":118,"z":"dd1ad5c3.22e528","wires":[]}]
+```
 
 Deploy the changes and click the inject node - check the output in the debug sidebar!
