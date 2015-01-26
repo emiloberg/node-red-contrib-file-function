@@ -6,7 +6,11 @@ This may help you developing for Node RED. Instead of having to write your Javas
 
 The file path will be relative from the path set in _settings.userDir_, or if not set from the Node-RED install directory.
 
-## Usage
+## Filename
+
+Either set the filename in the configuration dialog of the node, or override it by the `msg.filename` property of the incoming message.
+
+## Writing functions
 
 Writing functions in this node works works just like functions in the the original function node (except that you write it in an actual file and no in an input field):
 

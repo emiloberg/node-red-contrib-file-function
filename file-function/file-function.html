@@ -37,8 +37,9 @@
     executed from an actual file on your drive.</p>
 
     <p>This may help you developing for Node RED. Instead of having to write your Javascript
-    code in that small textfield in your browser you can use your favorite editor/IDE.
-    The file will be read every time the node is called, so there's no need to redeploy or restart Node-RED.</p>
+    code in that small textfield in your browser you can use your favorite editor/IDE.</p>
+
+    <p>The filename can be overridden by the <code>msg.filename</code> property of the incoming message.</p>
 
     <p>The file path will be relative from the path set in <code>settings.userDir</code>,
     or if not set; relative to your Node-RED root directory.</p>
