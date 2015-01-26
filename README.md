@@ -1,7 +1,6 @@
-# WIP
 # node-red-contrib-file-function
 
-**This Node-RED node is just like the core node "_function_", only that this node loads the script to be executed from an actual file on your drive.**
+**This Node-RED node is just like the [core node "function"](http://nodered.org/docs/writing-functions.html), only that this node loads the script to be executed from an actual file on your drive.**
 
 This may help you developing for Node RED. Instead of having to write your Javascript code in that small textfield in your browser you can use your favorite editor/IDE. The file will be read every time the node is called, so there's no need to redeploy or restart Node-RED.
 
