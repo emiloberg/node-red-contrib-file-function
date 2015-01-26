@@ -23,17 +23,42 @@ module.exports = function(RED) {
 		RED.nodes.createNode(this, n);
 
 		this.filename = n.filename || "";
-		var node = this;
-		var options = {
-			encoding: 'utf-8'
-		};
+		this.loadedScript = '';
+		this.loadedFilename = '';
 
+		var node = this;
+		
+		// Read and file when node is initialized,
+		// if user didn't check the "reload file every time"-checkbox, we'll be using
+		// this when node is invoked.
+		if (this.filename !== '') {
+			node.loadedFilename = this.filename;
+			fs.readFile(this.filename, {encoding: 'utf-8'}, function (err, fileContent) {
+				if (err) {
+					if (err.code === 'ENOENT') {
+						node.warn('Could not find file "' + err.path + '". Hint: File path is relative to "' + process.env.PWD + '"');
+					} else {
+						node.warn(err);
+					}
+				} else {
+					node.loadedScript = fileContent;
+				}
+			});
+		}
+
+
+		// On invocation
 		this.on("input", function (msg) {
 			var filename = msg.filename || this.filename;
-			if (filename === "") {
+
+			if (filename === '') {
 				node.warn('No filename specified');
-			} else {
-				fs.readFile(filename, options, function (err, fileContent) {
+			} else if (n.reloadfile === false && filename === node.loadedFilename && node.loadedScript !== ''){ // Run script from "cache"
+				node.warn('OLD FILE');
+				runScript(node, msg, node.loadedScript);
+			} else { // Read script from disk and run
+				node.warn('NEW FILE');
+				fs.readFile(filename, {encoding: 'utf-8'}, function (err, fileContent) {
 					if (err) {
 						if (err.code === 'ENOENT') {
 							node.warn('Could not find file "' + err.path + '". Hint: File path is relative to "' + process.env.PWD + '"');
@@ -42,6 +67,8 @@ module.exports = function(RED) {
 						}
 						msg.error = err;
 					} else {
+						node.loadedScript = fileContent;
+						node.loadedFilename = filename;
 						runScript(node, msg, fileContent);
 					}
 				});
@@ -100,7 +127,6 @@ module.exports = function(RED) {
 			node.warn(err);
 		}
 	}
-
 
     RED.nodes.registerType("file function",FunctionNode);
     RED.library.register("functions");

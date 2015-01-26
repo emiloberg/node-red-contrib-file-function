@@ -2,13 +2,22 @@
 
 **This Node-RED node is just like the [core node "function"](http://nodered.org/docs/writing-functions.html), only that this node loads the script to be executed from an actual file on your drive.**
 
-This may help you developing for Node RED. Instead of having to write your Javascript code in that small textfield in your browser you can use your favorite editor/IDE. The file will be read every time the node is called, so there's no need to redeploy or restart Node-RED.
+This may help you developing for Node RED. Instead of having to write your Javascript code in that small textfield in your browser you can use your favorite editor/IDE. 
 
-The file path will be relative from the path set in _settings.userDir_, or if not set from the Node-RED install directory.
+![screenshot of settings](https://raw.githubusercontent.com/emiloberg/node-red-contrib-file-function/master/docs/screenshot-settings.png)
 
 ## Filename
+The file path will be relative from the path set in _settings.userDir_, or if not set from the Node-RED install directory.
 
 Either set the filename in the configuration dialog of the node, or override it by the `msg.filename` property of the incoming message.
+
+## Cache
+By checking the _"Reread file from disk every time node is invoked?"_ checkbox the file will be read every time the node is called, so there's no need to redeploy or restart Node-RED. If the checkbox is unchecked, the file will be read on deploy/start.
+
+If the checkbox is set to only read the file once (when flow is deployed/Node-RED is started) but another filename is sent in msg.filename, it will read the file from disk and cache it anyways. Only the last called file will be cached. If you're alternating between two different files you're better of creating two different nodes if you're looking for perfomance.
+
+Unless you're working with functions called __very__ often or with __very__ large functions you can probably just leave it to reload the file every time it's invoked.
+
 
 ## Writing functions
 
@@ -40,6 +49,8 @@ return {
     payload: 'This is the input payload, but reversed: ' + reversedPayload
 };
 ```
+
+![screenshot of sample flow](https://raw.githubusercontent.com/emiloberg/node-red-contrib-file-function/master/docs/screenshot-flow.png)
 
 Import this flow (or add it manually by creating a simple [inject] > [file function] > [debug] flow yourself. Add the value `sample-file-function.js` to the _filename_ field in the _file function_ node):
 

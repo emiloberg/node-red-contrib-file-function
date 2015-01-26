@@ -18,6 +18,11 @@
          <input type="text" id="node-input-filename" placeholder="Filename">
     </div>
     <div class="form-row">
+        <label for="node-input-reloadfile" style="vertical-align: top"><i class="fa fa-refresh"></i> Reload</label>
+        <input type="checkbox" id="node-input-reloadfile" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-reloadfile" style="width: 70%;">Reread file from disk every time node is invoked?</label>
+    </div>
+    <div class="form-row">
         <label for="node-input-outputs"><i class="fa fa-random"></i> Outputs</label>
         <input id="node-input-outputs" style="width: 60px; height: 1.7em;" value="1">
     </div>
@@ -45,23 +50,14 @@
     or if not set; relative to your Node-RED root directory.</p>
 
     <p>Writing functions in this node works works just like functions in the the original
-    function node (except that you write it in an actual file and no in an input field):</p>
+    function node (except that you write it in an actual file and no in an input field)</p>
 
-	<p>A function block where you can write code to do more interesting things.</p>
-	<p>The message is passed in as a JavaScript object called <code>msg</code>.</p>
-	<p>By convention it will have a <code>msg.payload</code> property containing
-	   the body of the message.</p>
-	<p>The function should return the messages it wants to pass on to the next nodes
-	in the flow. It can return:</p>
-	<ul>
-	  <li>a single message object - passed to nodes connected to the first output</li>
-	  <li>an array of message objects - passed to nodes connected to the corresponding outputs</li>
-    </ul>
-    <p>If any element of the array is itself an array of messages, multiple
-	      messages are sent to the corresponding output.</p>
-	<p>If null is returned, either by itself or as an element of the array, no
-	      message is passed on.</p>
-	<p>See the <a target="_new" href="http://nodered.org/docs/writing-functions.html">online documentation</a> for more help.</p>
+    <p>See the <a target="_blank" href="https://github.com/emiloberg/node-red-contrib-file-function">online documentation for more help</a>.</p>
+
+    <p>See the <a target="_new" href="http://nodered.org/docs/writing-functions.html">Node-RED documentation on functions</a> for more help on functions.</p>
+
+
+
 </script>
 
 <script type="text/javascript">
@@ -71,6 +67,7 @@
         defaults: {
             name: {value:""},
             filename: {value:""},
+            reloadfile: {value:true},
             outputs: {value:1}
         },
         inputs:1,
