@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-file-function",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Read function javascript from file. This way you can use your favorite editor/IDE to develop Node-RED functions",
   "repository": {
     "type": "git",
