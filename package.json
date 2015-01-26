@@ -17,7 +17,7 @@
   ],
   "node-red": {
     "nodes": {
-      "file-function": "file-function.js"
+      "file-function": "file-function/file-function.js"
     }
   },  
   "author": "Emil Oberg",
