@@ -36,7 +36,11 @@ module.exports = function(RED) {
 			} else {
 				fs.readFile(filename, options, function (err, fileContent) {
 					if (err) {
-						node.warn(err);
+						if (err.code === 'ENOENT') {
+							node.warn('Could not find file "' + err.path + '". Hint: File path is relative to "' + process.env.PWD + '"');
+						} else {
+							node.warn(err);
+						}
 						msg.error = err;
 					} else {
 						runScript(node, msg, fileContent);
