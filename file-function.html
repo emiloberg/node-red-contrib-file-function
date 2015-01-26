@@ -22,22 +22,31 @@
          <input type="text" id="node-input-filename" placeholder="Filename">
     </div>
     <div class="form-row">
-        <label for="node-input-func"><i class="fa fa-wrench"></i> Function</label>
-        <input type="hidden" id="node-input-func" autofocus="autofocus">
-        <div style="height: 250px;" class="node-text-editor" id="node-input-func-editor" ></div>
-    </div>
-    <div class="form-row">
         <label for="node-input-outputs"><i class="fa fa-random"></i> Outputs</label>
         <input id="node-input-outputs" style="width: 60px; height: 1.7em;" value="1">
     </div>
     
     <div id="node-input-tip" class="form-tips">
         The file path will be relative from the path set in <b>settings.userDir</b>,
-        or if not set from the Node-RED install directory.
+        or if not set; relative to your Node-RED root directory.
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="file function">
+
+    <p>Just like the core node "function", only that this node loads the script to be
+    executed from an actual file on your drive.</p>
+
+    <p>This may help you developing for Node RED. Instead of having to write your Javascript
+    code in that small textfield in your browser you can use your favorite editor/IDE.
+    The file will be read every time the node is called, so there's no need to redeploy or restart Node-RED.</p>
+
+    <p>The file path will be relative from the path set in <code>settings.userDir</code>,
+    or if not set; relative to your Node-RED root directory.</p>
+
+    <p>Writing functions in this node works works just like functions in the the original
+    function node (except that you write it in an actual file and no in an input field):</p>
+
 	<p>A function block where you can write code to do more interesting things.</p>
 	<p>The message is passed in as a JavaScript object called <code>msg</code>.</p>
 	<p>By convention it will have a <code>msg.payload</code> property containing
@@ -61,19 +70,14 @@
         category: 'function',
         defaults: {
             name: {value:""},
-            func: {value:"\nreturn msg;"},
             filename: {value:""},
             outputs: {value:1}
         },
         inputs:1,
         outputs:1,
-        icon: "function.png",
+        icon: "file-function-icon.png",
         label: function() {
-            if (this.name) {
-                return 'ff: ' + this.name;
-            } else {
-                return 'file function';
-            }
+            return this.name || 'file function';
         },
         labelStyle: function() {
             return this.name ? "node_label_italic" : "";
@@ -82,44 +86,6 @@
             $( "#node-input-outputs" ).spinner({
                 min:1
             });
-
-            function functionDialogResize(ev,ui) {
-                $("#node-input-func-editor").css("height",(ui.size.height-275)+"px");
-            };
-
-            var jqDialog = $( "#dialog" );
-
-            jqDialog.on("dialogresize", functionDialogResize);
-            jqDialog.one("dialogopen", function(ev) {
-                var size = jqDialog.dialog('option','sizeCache-function');
-                if (size) {
-                    functionDialogResize(null,{size:size});
-                }
-            });
-            jqDialog.one("dialogclose", function(ev,ui) {
-                var height = jqDialog.dialog('option','height');
-                jqDialog.off("dialogresize",functionDialogResize);
-            });
-            var that = this;
-            require(["orion/editor/edit"], function(edit) {
-                that.editor = edit({
-                    parent:document.getElementById('node-input-func-editor'),
-                    lang:"js",
-                    contents: $("#node-input-func").val()
-                });
-                RED.library.create({
-                    url:"functions", // where to get the data from
-                    type:"function", // the type of object the library is for
-                    editor:that.editor, // the field name the main text body goes to
-                    fields:['name','outputs']
-                });
-                $("#node-input-name").focus();
-
-            });
-        },
-        oneditsave: function() {
-            $("#node-input-func").val(this.editor.getText());
-            delete this.editor;
         }
     });
 </script>
