@@ -54,10 +54,8 @@ module.exports = function(RED) {
 			if (filename === '') {
 				node.warn('No filename specified');
 			} else if (n.reloadfile === false && filename === node.loadedFilename && node.loadedScript !== ''){ // Run script from "cache"
-				node.warn('OLD FILE');
 				runScript(node, msg, node.loadedScript);
 			} else { // Read script from disk and run
-				node.warn('NEW FILE');
 				fs.readFile(filename, {encoding: 'utf-8'}, function (err, fileContent) {
 					if (err) {
 						if (err.code === 'ENOENT') {
