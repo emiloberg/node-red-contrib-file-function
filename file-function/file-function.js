@@ -15,9 +15,12 @@
 
 module.exports = function(RED) {
     "use strict";
-    var util = require("util");
-    var vm = require("vm");
-	var fs = require("fs");
+    const util = require("util");
+    const vm = require("vm");
+	const fs = require("fs");
+	const path = require("path");
+	const process = require("process");
+
 
     function FunctionNode(n) {
 		RED.nodes.createNode(this, n);
@@ -78,14 +81,31 @@ module.exports = function(RED) {
 	function runScript(node, msg, script) {
 		var functionText = "var results = null; results = (function(msg){"+script+"\n})(msg);";
 
-		var sandbox = {
+
+		var sandbox = Object.assign(node.context(), {
+			process: process,
+            path: path,
+            util: util,
+			require: function(name) {
+				if (path.extname(name)) {
+					var fullpath = path.join(process.cwd(), name);
+					return require(fullpath);
+				} else {
+					return require(name);
+				}
+			},
 			console:console,
 			util:util,
-			Buffer:Buffer,
-			context: {
-				global:RED.settings.functionGlobalContext || {}
-			}
-		};
+			Buffer:Buffer,			
+			
+			node: node,
+			context: node.context(),
+			
+			setTimeout: setTimeout,
+			clearTimeout: clearTimeout,
+			setInterval: setInterval,
+			clearInterval: clearInterval
+		});
 
 		var context = vm.createContext(sandbox);
 		var vmScript = vm.createScript(functionText);
@@ -122,7 +142,7 @@ module.exports = function(RED) {
 			}
 
 		} catch(err) {
-			node.warn(err);
+			node.error(err, msg);
 		}
 	}
 

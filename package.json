@@ -1,10 +1,10 @@
 {
-  "name": "node-red-contrib-file-function",
+  "name": "node-red-contrib-file-function-ext",
   "version": "1.1.2",
-  "description": "Read function javascript from file. This way you can use your favorite editor/IDE to develop Node-RED functions",
+  "description": "Bug fix and extension of original node-red-contrib-file-function. Read function javascript from file. This way you can use your favorite editor/IDE to develop Node-RED functions",
   "repository": {
     "type": "git",
-    "url": "https://github.com/emiloberg/node-red-contrib-file-function.git"
+    "url": "https://github.com/oazabir/node-red-contrib-file-function.git"
   },
   "keywords": [
     "node-red",
@@ -19,10 +19,10 @@
       "file-function": "file-function/file-function.js"
     }
   },
-  "author": "Emil Oberg",
+  "author": "Omar AL Zabir",
   "license": "Apache",
   "bugs": {
-    "url": "https://github.com/emiloberg/node-red-contrib-file-function/issues"
+    "url": "https://github.com/oazabir/node-red-contrib-file-function/issues"
   },
-  "homepage": "https://github.com/emiloberg/node-red-contrib-file-function"
+  "homepage": "https://github.com/oazabir/node-red-contrib-file-function"
 }
