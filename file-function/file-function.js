@@ -79,7 +79,7 @@ module.exports = function(RED) {
 
 
 	function runScript(node, msg, script) {
-		var functionText = "try { var results = null; results = (function(msg){"+script+"\n})(msg); } catch(err) { node.error(err); }";
+		var functionText = "var results = null; results = (function(msg){"+script+"\n})(msg);";
 
 
 		var sandbox = Object.assign(node.context(), {
@@ -142,7 +142,7 @@ module.exports = function(RED) {
 			}
 
 		} catch(err) {
-			node.error(err, msg);
+			node.error(err.toString(), msg);
 		}
 	}
 
