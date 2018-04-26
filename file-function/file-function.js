@@ -79,7 +79,7 @@ module.exports = function(RED) {
 
 
 	function runScript(node, msg, script) {
-		var functionText = "var results = null; results = (function(msg){"+script+"\n})(msg);";
+		var functionText = "try { var results = null; results = (function(msg){"+script+"\n})(msg); } catch(err) { node.error(err); }";
 
 
 		var sandbox = Object.assign(node.context(), {
