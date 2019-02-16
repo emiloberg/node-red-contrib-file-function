@@ -84,8 +84,8 @@ module.exports = function(RED) {
 
 		var sandbox = Object.assign(node.context(), {
 			process: process,
-            path: path,
-            util: util,
+                        path: path,
+                        util: util,
 			require: function(name) {
 				if (path.extname(name)) {
 					var fullpath = path.join(path.dirname(path.resolve(node.filename)),name);
@@ -108,9 +108,9 @@ module.exports = function(RED) {
 		});
 
 		var context = vm.createContext(sandbox);
-		var vmScript = vm.createScript(functionText);
 
 		try {
+			var vmScript = vm.createScript(functionText);
 			var start = process.hrtime();
 			context.msg = msg;
 			vmScript.runInContext(context);
