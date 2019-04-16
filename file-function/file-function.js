@@ -121,20 +121,6 @@ module.exports = function(RED) {
 				results = [results];
 			}
 
-			if (msg.topic) {
-				for (var m in results) {
-					if (results[m]) {
-						if (util.isArray(results[m])) {
-							for (var n=0; n < results[m].length; n++) {
-								results[m][n].topic = msg.topic;
-							}
-						} else {
-							results[m].topic = msg.topic;
-						}
-					}
-				}
-			}
-
 			node.send(results);
 			var duration = process.hrtime(start);
 			if (process.env.NODE_RED_FUNCTION_TIME) {
