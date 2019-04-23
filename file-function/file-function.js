@@ -87,7 +87,7 @@ module.exports = function(RED) {
                         path: path,
                         util: util,
 			require: function(name) {
-				if (path.startsWith('.')) {
+				if (name.startsWith('.')) {
 					var fullpath = path.join(path.dirname(path.resolve(node.filename)),name);
 					return require(fullpath);
 				} else {
