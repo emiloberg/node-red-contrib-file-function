@@ -87,7 +87,12 @@ module.exports = function(RED) {
                         path: path,
                         util: util,
 			require: function(name) {
-				return require(name);
+				if (path.extname(name)) {
+					var fullpath = path.join(path.dirname(path.resolve(node.filename)),name);
+					return require(fullpath);
+				} else {
+					return require(name);
+				}
 			},
 			console:console,
 			util:util,
