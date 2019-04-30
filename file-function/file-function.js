@@ -21,21 +21,6 @@ module.exports = function(RED) {
     const path = require("path")
     const process = require("process")
 
-    const requireFunction = function(name) {
-        if (name.startsWith(".")) {
-            var fullpath = path.join(
-                path.dirname(path.resolve(node.loadedFilename)),
-                name
-            )
-            return require(fullpath)
-        } else {
-            return require(name)
-        }
-    }
-    requireFunction.main = require.main
-    requireFunction.cache = require.cache
-    requireFunction.resolve = require.resolve
-
     function FunctionNode(n) {
         RED.nodes.createNode(this, n)
 
@@ -115,10 +100,26 @@ module.exports = function(RED) {
     }
 
     function runScript(node, msg, script) {
-        var functionText =
+        const functionText =
             "var results = null; results = (function(msg){" +
             script +
             "\n})(msg);"
+
+        const requireFunction = function(name) {
+            if (name.startsWith(".")) {
+                var fullpath = path.join(
+                    path.dirname(path.resolve(node.loadedFilename)),
+                    name
+                )
+                return require(fullpath)
+            } else {
+                return require(name)
+            }
+        }
+
+        requireFunction.main = require.main
+        requireFunction.cache = require.cache
+        requireFunction.resolve = require.resolve
 
         var sandbox = Object.assign(node.context(), {
             process: process,
@@ -130,7 +131,6 @@ module.exports = function(RED) {
             Buffer: Buffer,
             node: node,
             context: node.context(),
-
             setTimeout: setTimeout,
             clearTimeout: clearTimeout,
             setInterval: setInterval,
