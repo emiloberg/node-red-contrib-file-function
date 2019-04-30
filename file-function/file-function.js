@@ -57,6 +57,21 @@ module.exports = function(RED) {
             })
         }
 
+        function requireFunction(name) {
+            if (name.startsWith(".")) {
+                var fullpath = path.join(
+                    path.dirname(path.resolve(node.loadedFilename)),
+                    name
+                )
+                return require(fullpath)
+            } else {
+                return require(name)
+            }
+        }
+        requireFunction.main = require.main
+        requireFunction.cache = require.cache
+        requireFunction.resolve = require.resolve
+
         // On invocation
         this.on("input", function(msg) {
             var filename = msg.filename || this.filename
@@ -109,17 +124,7 @@ module.exports = function(RED) {
             process: process,
             path: path,
             util: util,
-            require: function(name) {
-                if (name.startsWith(".")) {
-                    var fullpath = path.join(
-                        path.dirname(path.resolve(node.loadedFilename)),
-                        name
-                    )
-                    return require(fullpath)
-                } else {
-                    return require(name)
-                }
-            },
+            require: requireFunction,
             console: console,
             util: util,
             Buffer: Buffer,
