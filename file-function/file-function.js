@@ -21,6 +21,21 @@ module.exports = function(RED) {
     const path = require("path")
     const process = require("process")
 
+    const requireFunction = function(name) {
+        if (name.startsWith(".")) {
+            var fullpath = path.join(
+                path.dirname(path.resolve(node.loadedFilename)),
+                name
+            )
+            return require(fullpath)
+        } else {
+            return require(name)
+        }
+    }
+    requireFunction.main = require.main
+    requireFunction.cache = require.cache
+    requireFunction.resolve = require.resolve
+
     function FunctionNode(n) {
         RED.nodes.createNode(this, n)
 
@@ -56,21 +71,6 @@ module.exports = function(RED) {
                 }
             })
         }
-
-        function requireFunction(name) {
-            if (name.startsWith(".")) {
-                var fullpath = path.join(
-                    path.dirname(path.resolve(node.loadedFilename)),
-                    name
-                )
-                return require(fullpath)
-            } else {
-                return require(name)
-            }
-        }
-        requireFunction.main = require.main
-        requireFunction.cache = require.cache
-        requireFunction.resolve = require.resolve
 
         // On invocation
         this.on("input", function(msg) {
