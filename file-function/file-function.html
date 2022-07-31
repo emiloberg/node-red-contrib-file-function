@@ -12,77 +12,89 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="file function">
-    <div class="form-row node-input-filename">
-         <label for="node-input-filename"><i class="fa fa-file"></i> Filename</label>
-         <input type="text" id="node-input-filename" placeholder="Filename">
-    </div>
-    <div class="form-row">
-        <label for="node-input-reloadfile" style="vertical-align: top"><i class="fa fa-refresh"></i> Reload</label>
-        <input type="checkbox" id="node-input-reloadfile" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-reloadfile" style="width: 70%;">Reread file from disk every time node is invoked?</label>
-    </div>
-    <div class="form-row">
-        <label for="node-input-outputs"><i class="fa fa-random"></i> Outputs</label>
-        <input id="node-input-outputs" style="width: 60px; height: 1.7em;" value="1">
-    </div>
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div id="node-input-tip" class="form-tips">
-        The file path will be relative from the path set in <b>settings.userDir</b>,
-        or if not set; relative to your Node-RED root directory.
-    </div>
+<script type="text/html" data-template-name="file-function">
+  <div class="form-row node-input-filename">
+    <label for="node-input-filename"><i class="fa fa-file"></i> Filename</label>
+    <input type="text" id="node-input-filename" placeholder="Filename" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-reloadFile" style="vertical-align: top">
+      <i class="fa fa-refresh"></i> Reload
+    </label>
+    <input
+      type="checkbox"
+      id="node-input-reloadFile"
+      style="display: inline-block; width: auto; vertical-align: top;"
+    />
+    <label for="node-input-reloadFile" style="width: 70%;">
+      Reread file from disk every time node is invoked?
+    </label>
+  </div>
+  <div class="form-row">
+    <label for="node-input-outputs"><i class="fa fa-random"></i> Outputs</label>
+    <input id="node-input-outputs" style="width: 60px; height: 1.7em;" value="1" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div id="node-input-tip" class="form-tips">
+    The file path will be relative from the path set in <b>settings.userDir</b>, or if not set;
+    relative to your Node-RED root directory.
+  </div>
 </script>
 
-<script type="text/x-red" data-help-name="file function">
-
-    <p>Just like the core node "function", only that this node loads the script to be
-    executed from an actual file on your drive.</p>
-
-    <p>This may help you developing for Node RED. Instead of having to write your Javascript
-    code in that small textfield in your browser you can use your favorite editor/IDE.</p>
-
-    <p>The filename can be overridden by the <code>msg.filename</code> property of the incoming message.</p>
-
-    <p>The file path will be relative from the path set in <code>settings.userDir</code>,
-    or if not set; relative to your Node-RED root directory.</p>
-
-    <p>Writing functions in this node works works just like functions in the the original
-    function node (except that you write it in an actual file and no in an input field)</p>
-
-    <p>See the <a target="_blank" href="https://github.com/emiloberg/node-red-contrib-file-function">online documentation for more help</a>.</p>
-
-    <p>See the <a target="_new" href="http://nodered.org/docs/writing-functions.html">Node-RED documentation on functions</a> for more help on functions.</p>
-
-
-
+<script type="text/html" data-help-name="file-function">
+  <p>
+    Just like the core node "function", only that this node loads the script to be executed from an
+    actual file on your drive.
+  </p>
+  <p>
+    This may help you developing for Node RED. Instead of having to write your Javascript code in
+    that small textfield in your browser you can use your favorite editor/IDE.
+  </p>
+  <p>
+    The filename can be overridden by the <code>msg.filename</code> property of the incoming
+    message.
+  </p>
+  <p>
+    The file path will be relative from the path set in <code>settings.userDir</code>, or if not
+    set; relative to your Node-RED root directory.
+  </p>
+  <p>
+    Writing functions in this node works works just like functions in the the original function node
+    (except that you write it in an actual file and no in an input field)
+  </p>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('file function',{
-        color:"#fdd0a2",
-        category: 'function',
-        defaults: {
-            name: {value:""},
-            filename: {value:""},
-            reloadfile: {value:true},
-            outputs: {value:1}
-        },
-        inputs:1,
-        outputs:1,
-        icon: "file-function-icon.png",
-        label: function() {
-            return this.name || this.filename || 'file function';
-        },
-        labelStyle: function() {
-            return this.name ? "node_label_italic" : "";
-        },
-        oneditprepare: function() {
-            $( "#node-input-outputs" ).spinner({
-                min:1
-            });
+  RED.nodes.registerType('file-function', {
+    color: '#fdd0a2',
+    category: 'function',
+    defaults: {
+      name: { value: '' },
+      filename: {
+        value: '',
+        validate(filename) {
+          return filename.length
         }
-    });
+      },
+      reloadFile: { value: true },
+      outputs: { value: 1 }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-file-code-o',
+    label: function () {
+      return this.name || this.filename || 'File Function'
+    },
+    labelStyle: function () {
+      return this.name ? 'node_label_italic' : ''
+    },
+    oneditprepare: function () {
+      $('#node-input-outputs').spinner({
+        min: 1
+      })
+    }
+  })
 </script>

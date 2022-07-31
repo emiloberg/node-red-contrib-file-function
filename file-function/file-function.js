@@ -12,120 +12,113 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+const util = require('util')
+const vm = require('vm')
+const fs = require('fs')
+const path = require('path')
 
-module.exports = function(RED) {
-    "use strict";
-    var util = require("util");
-    var vm = require("vm");
-	var fs = require("fs");
+module.exports = RED => {
+  function runScript(node, msg, script) {
+    const functionText = `const results = null; results = (function(msg){${script.replace(/return *msg;*[\s\r\n\t]/, '')}return msg})(msg);`
 
-    function FunctionNode(n) {
-		RED.nodes.createNode(this, n);
+    const sandbox = {
+      console,
+      util,
+      Buffer,
+      context: {
+        global: RED.settings.functionGlobalContext || {}
+      }
+    }
 
-		this.filename = n.filename || "";
-		this.loadedScript = '';
-		this.loadedFilename = '';
+    const context = vm.createContext(sandbox)
+    const vmScript = vm.createScript(functionText)
 
-		var node = this;
-		
-		// Read and file when node is initialized,
-		// if user didn't check the "reload file every time"-checkbox, we'll be using
-		// this when node is invoked.
-		if (this.filename !== '') {
-			node.loadedFilename = this.filename;
-			fs.readFile(this.filename, {encoding: 'utf-8'}, function (err, fileContent) {
-				if (err) {
-					if (err.code === 'ENOENT') {
-						node.warn('Could not find file "' + err.path + '". Hint: File path is relative to "' + process.env.PWD + '"');
-					} else {
-						node.warn(err);
-					}
-				} else {
-					node.loadedScript = fileContent;
-				}
-			});
-		}
+    try {
+      const start = process.hrtime()
+      context.msg = msg
+      vmScript.runInContext(context)
+      let { results } = context
+      results = Array.isArray(results) ? results : [results]
 
+      if (msg.topic) {
+        results.forEach(item => {
+          const itemArray = Array.isArray(item) ? item : [item]
+          itemArray.forEach(result => {
+            if (result.topic) {
+              result.topic = msg.topic
+            }
+          })
+        })
+      }
 
-		// On invocation
-		this.on("input", function (msg) {
-			var filename = msg.filename || this.filename;
+      node.send(results)
+      const duration = process.hrtime(start)
+      if (process.env.NODE_RED_FUNCTION_TIME) {
+        this.status({
+          fill: 'yellow',
+          shape: 'dot',
+          text: `${Math.floor((duration[0] * 1e9 + duration[1]) / 10000) / 100}`
+        })
+      }
+    } catch (err) {
+      node.warn(err)
+    }
+  }
 
-			if (filename === '') {
-				node.warn('No filename specified');
-			} else if (n.reloadfile === false && filename === node.loadedFilename && node.loadedScript !== ''){ // Run script from "cache"
-				runScript(node, msg, node.loadedScript);
-			} else { // Read script from disk and run
-				fs.readFile(filename, {encoding: 'utf-8'}, function (err, fileContent) {
-					if (err) {
-						if (err.code === 'ENOENT') {
-							node.warn('Could not find file "' + err.path + '". Hint: File path is relative to "' + process.env.PWD + '"');
-						} else {
-							node.warn(err);
-						}
-						msg.error = err;
-					} else {
-						node.loadedScript = fileContent;
-						node.loadedFilename = filename;
-						runScript(node, msg, fileContent);
-					}
-				});
-			}
-		});
-	}
+  function FunctionNode(config) {
+    const node = this
+    const { filename } = config
 
+    RED.nodes.createNode(node, config)
+    node.filename = ''
+    const projects = RED.settings.get('projects') || {}
+    const paths = filename ? [
+      path.join(process.env.PWD || '', filename),
+      path.join(process.cwd(),filename),
+      path.join(RED.settings.userDir, filename)
+    ] : []
 
-	function runScript(node, msg, script) {
-		var functionText = "var results = null; results = (function(msg){"+script+"\n})(msg);";
+    if (paths.length && projects.activeProject) {
+      paths.push(path.join(RED.settings.userDir, 'projects', projects.activeProject, filename))
+    }
 
-		var sandbox = {
-			console:console,
-			util:util,
-			Buffer:Buffer,
-			context: {
-				global:RED.settings.functionGlobalContext || {}
-			}
-		};
+    paths.forEach(filename => {
+      if (fs.existsSync(filename)) {
+        node.filename = filename
+      }
+    })
 
-		var context = vm.createContext(sandbox);
-		var vmScript = vm.createScript(functionText);
+    // Read and file when node is initialized,
+    // if user didn't check the "reload file every time"-checkbox, we'll be using
+    // this when node is invoked.
+    if (node.filename) {
+      node.loadedFilename = node.filename
+      node.loadedScript = fs.readFileSync(node.filename, { encoding: 'utf-8' })
 
-		try {
-			var start = process.hrtime();
-			context.msg = msg;
-			vmScript.runInContext(context);
-			var results = context.results;
-			if (results == null) {
-				results = [];
-			} else if (results.length == null) {
-				results = [results];
-			}
+      // On invocation
+      node.on('input', msg => {
+        const filename = msg.filename || node.filename
 
-			if (msg.topic) {
-				for (var m in results) {
-					if (results[m]) {
-						if (util.isArray(results[m])) {
-							for (var n=0; n < results[m].length; n++) {
-								results[m][n].topic = msg.topic;
-							}
-						} else {
-							results[m].topic = msg.topic;
-						}
-					}
-				}
-			}
+        if (filename === '') {
+          node.warn('No file with that name found.')
+        } else if (
+          config.reloadFile === false
+          && filename === node.loadedFilename
+          && node.loadedScript !== ''
+        ) {
+          // Run script from "cache"
+          runScript(node, msg, node.loadedScript)
+        } else {
+          node.loadedScript = fs.readFileSync(node.filename, { encoding: 'utf-8' })
+          node.loadedFilename = filename
+          runScript(node, msg, node.loadedScript)
+        }
+      })
+    } else {
+      node.warn('No file with that name found.')
+    }
+  }
 
-			node.send(results);
-			var duration = process.hrtime(start);
-			if (process.env.NODE_RED_FUNCTION_TIME) {
-				this.status({fill:"yellow",shape:"dot",text:""+Math.floor((duration[0]* 1e9 +  duration[1])/10000)/100});
-			}
-
-		} catch(err) {
-			node.warn(err);
-		}
-	}
-
-    RED.nodes.registerType("file function",FunctionNode);
-    RED.library.register("functions");
-};
+  RED.nodes.registerType('file-function', FunctionNode)
+  RED.library.register('functions')
+}
