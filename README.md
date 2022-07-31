@@ -1,11 +1,18 @@
 # node-red-contrib-file-function
 
+**Bug fix and extension of original node-red-contrib-file-function. Read function javascript from file. This way you can use your favorite editor/IDE to develop Node-RED functions**
+
 **This Node-RED node is just like the [core node "function"](http://nodered.org/docs/writing-functions.html), only that this node loads the script to be executed from an actual file on your drive.**
 
 This may help you developing for Node RED. Instead of having to write your Javascript code in that small textfield in your browser you can use your favorite editor/IDE. 
 
 ![screenshot of settings](https://raw.githubusercontent.com/emiloberg/node-red-contrib-file-function/master/docs/screenshot-settings.png)
 
+## Changes over original node-red-contrib-file-function
+
+ - Make it compatible with node-red v0.18.4
+ - FIX: ReferenceError: global is not defined
+ - FIX: node object is always undefined
 
 
 ## Status
