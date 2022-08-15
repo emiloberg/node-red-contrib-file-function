@@ -1,24 +1,17 @@
 # node-red-contrib-file-function
 
-**Bug fix and extension of original node-red-contrib-file-function. Read function javascript from file. This way you can use your favorite editor/IDE to develop Node-RED functions**
-
 **This Node-RED node is just like the [core node "function"](http://nodered.org/docs/writing-functions.html), only that this node loads the script to be executed from an actual file on your drive.**
 
 This may help you developing for Node RED. Instead of having to write your Javascript code in that small textfield in your browser you can use your favorite editor/IDE. 
 
 ![screenshot of settings](https://raw.githubusercontent.com/emiloberg/node-red-contrib-file-function/master/docs/screenshot-settings.png)
 
-## Changes over original node-red-contrib-file-function
-
- - Make it compatible with node-red v0.18.4
- - FIX: ReferenceError: global is not defined
- - FIX: node object is always undefined
 
 
 ## Status
 What? | Status | What? | Status
 ------- | ------ | ------- | ------
-Code Climate GPA | [![Code Climate](https://codeclimate.com/github/emiloberg/node-red-contrib-file-function/badges/gpa.svg)](https://codeclimate.com/github/emiloberg/node-red-contrib-file-function) | Licence | [![Licence](https://img.shields.io/npm/l/node-red-contrib-file-function.svg)](https://github.com/emiloberg/node-red-contrib-file-function/blob/master/LICENSE)
+Code Climate GPA | [![Code Climate](https://codeclimate.com/github/emiloberg/node-red-contrib-file-function/badges/gpa.svg)](https://codeclimate.com/github/emiloberg/node-red-contrib-file-function) | License | [![License](https://img.shields.io/npm/l/node-red-contrib-file-function.svg)](https://github.com/emiloberg/node-red-contrib-file-function/blob/master/LICENSE)
 Codacy | [![Codacy Badge](https://www.codacy.com/project/badge/f51ca088d01f4af6b83ed2e2529b51dd)](https://www.codacy.com/public/emiloberg/node-red-contrib-file-function) | Tag |  [![Tag](https://img.shields.io/github/tag/emiloberg/node-red-contrib-file-function.svg)](https://github.com/emiloberg/node-red-contrib-file-function/tags)
 Issues | [![Issues](https://img.shields.io/github/issues/emiloberg/node-red-contrib-file-function.svg)](https://github.com/emiloberg/node-red-contrib-file-function/issues) | GitHub Forks | [![Forks](https://img.shields.io/github/forks/emiloberg/node-red-contrib-file-function.svg)](https://github.com/emiloberg/node-red-contrib-file-function/network)
 GitHub Version | [![GitHub version](https://badge.fury.io/gh/emiloberg%2Fnode-red-contrib-file-function.svg)](http://badge.fury.io/gh/emiloberg%2Fnode-red-contrib-file-function) | GitHub Followers | [![Followers](https://img.shields.io/github/followers/emiloberg.svg)](https://github.com/emiloberg/followers)
@@ -33,7 +26,7 @@ Either set the filename in the configuration dialog of the node, or override it 
 ## Cache
 By checking the _"Reread file from disk every time node is invoked?"_ checkbox the file will be read every time the node is called, so there's no need to redeploy or restart Node-RED. If the checkbox is unchecked, the file will be read on deploy/start.
 
-If the checkbox is set to only read the file once (when flow is deployed/Node-RED is started) but another filename is sent in msg.filename, it will read the file from disk and cache it anyways. Only the last called file will be cached. If you're alternating between two different files you're better of creating two different nodes if you're looking for perfomance.
+If the checkbox is set to only read the file once (when flow is deployed/Node-RED is started) but another filename is sent in msg.filename, it will read the file from disk and cache it anyways. Only the last called file will be cached. If you're alternating between two different files you're better of creating two different nodes if you're looking for performance.
 
 Unless you're working with functions called __very__ often or with __very__ large functions you can probably just leave it to reload the file every time it's invoked.
 
